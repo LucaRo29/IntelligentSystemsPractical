@@ -36,7 +36,7 @@ public class Main {
 			"                }}");
 
 	//private static final String document = "http://ias.cs.tum.edu/kb/knowrob.owl#";
-	private static final String document = "C:/Users/Andi/Documents/GitHub/IntelligentSystemsPractical/src/main/java/practical_new.owl";
+	private static final String document = "./practical_new.owl";
 	
 	/**
 	 * Examples of SPARQL with apache jena
