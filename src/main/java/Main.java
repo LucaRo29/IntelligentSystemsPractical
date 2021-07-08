@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntClass;
@@ -25,12 +27,12 @@ public class Main {
 			"                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
 			"                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
 			"                                                                                                                                       ",
-			"                SELECT ?s  ?r                                                                               ",
+			"                SELECT ?s  ?r   ?p ?a                                                                            ",
 			"                WHERE {                                                                                                     ",
 			"                {                                                                                                                     ",
-			"                  ?x xmlns:hasState ?s . "
-			+ " 				   ?z xmlns:hasParticipant	?x . "
-			+ " 				   ?z xmlns:hasRoadAddition	?r . "			                                                                                                                ,
+			"                  ?p xmlns:hasState ?s . "
+			+ " 				   ?r xmlns:hasParticipant	?p . "
+			+ " 				   ?r xmlns:hasRoadAddition	?a . "			                                                                                                                ,
 			"                }}");
 
 	//private static final String document = "http://ias.cs.tum.edu/kb/knowrob.owl#";
@@ -47,62 +49,77 @@ public class Main {
 		OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
 		model.read(document);
 		QueryExecution qexec = QueryExecutionFactory.create(query, model);
-
-		log.info("Obtains the result set");
 		ResultSet results = qexec.execSelect();
 
-		log.info("Iterates over the result set");
+		ArrayList<String> participants = new ArrayList<String>();
+		ArrayList<String> states = new ArrayList<String>();
+		ArrayList<String> roads = new ArrayList<String>();
+		ArrayList<String> road_additions = new ArrayList<String>();
+		
 		while (results.hasNext()) {
 			QuerySolution sol = results.nextSolution();
-			String participant_state = sol.get("s").asNode().getLocalName() ;
-		    String road_addition = sol.get("r").asNode().getLocalName() ;
-		 
-			//log.info("Solution: " + participant_state + " " + road_addition);
 			
-			System.out.println("state is: " + participant_state);
-			System.out.println("addition is: " + road_addition);
-			
-			if(participant_state.equals("overtake") && road_addition.equals("solid_line"))
+			if(sol.get("p") != null)
 			{
-				
-				log.info("Situation is not STVO conform");
+				participants.add(sol.get("p").asNode().getLocalName());
 			}
-			else if(!participant_state.equals("stop") && road_addition.equals("stop_sign"))
+			if(sol.get("s") != null)
 			{
-				log.info("Situation is not STVO conform");
+				states.add(sol.get("s").asNode().getLocalName());
 			}
-			else
+			if(sol.get("r") != null)
 			{
-				log.info("Situation is STVO conform");
+				roads.add(sol.get("r").asNode().getLocalName());
 			}
-			
+			if(sol.get("a") != null)
+			{
+				road_additions.add(sol.get("a").asNode().getLocalName());
+			}
+		}
+		
+		boolean legal = true;
+		for(int i = 0; i < participants.size(); i++)
+		{
+			if(states.get(i).equals("overtake") && road_additions.get(i).equals("solid_line"))
+			{
+				legal = false;
+				log.info("Overtaking over solid line. Situation is not STVO conform");
+			}
+			else if(!(states.get(i).equals("stop")) && road_additions.get(i).equals("stop_sign"))
+			{
+				legal = false;
+				log.info("Driving over stop sign. Situation is not STVO conform");
+			}
+		}
+		
+		if(legal)
+		{
+			log.info("Situation is STVO conform");
 		}
 		
 		
-		
-		
-		log.info("Obtain the properties of the model");
-		ExtendedIterator<ObjectProperty> properties = model.listObjectProperties();
-
-		log.info("Iterates over the properties");
-		while (properties.hasNext()) {
-			log.info("Property: " + properties.next().getLocalName());
-		}
-
-		log.info("Obtains an iterator over individual resources");
-		ExtendedIterator<Individual> individualResources = model.listIndividuals();
-
-		log.info("Iterates over the resources");
-		while (individualResources.hasNext()) {
-			log.info("Individual resource: " + individualResources.next());
-		}
-
-		log.info("Obtains an extended iterator over classes");
-		ExtendedIterator<OntClass> classes = model.listClasses();
-
-		log.info("Iterates over the classes");
-		while (classes.hasNext()) {
-			log.info("Class: " + classes.next().toString());
-		}
+//		log.info("Obtain the properties of the model");
+//		ExtendedIterator<ObjectProperty> properties = model.listObjectProperties();
+//
+//		log.info("Iterates over the properties");
+//		while (properties.hasNext()) {
+//			log.info("Property: " + properties.next().getLocalName());
+//		}
+//
+//		log.info("Obtains an iterator over individual resources");
+//		ExtendedIterator<Individual> individualResources = model.listIndividuals();
+//
+//		log.info("Iterates over the resources");
+//		while (individualResources.hasNext()) {
+//			log.info("Individual resource: " + individualResources.next());
+//		}
+//
+//		log.info("Obtains an extended iterator over classes");
+//		ExtendedIterator<OntClass> classes = model.listClasses();
+//
+//		log.info("Iterates over the classes");
+//		while (classes.hasNext()) {
+//			log.info("Class: " + classes.next().toString());
+//		}
 	}
 }
