@@ -1,6 +1,10 @@
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.ObjectProperty;
+import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.util.iterator.ExtendedIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.jena.query.QueryExecution;
@@ -63,6 +67,10 @@ public class Main {
 				
 				log.info("Situation is not STVO conform");
 			}
+			else if(!participant_state.equals("stop") && road_addition.equals("stop_sign"))
+			{
+				log.info("Situation is not STVO conform");
+			}
 			else
 			{
 				log.info("Situation is STVO conform");
@@ -73,28 +81,28 @@ public class Main {
 		
 		
 		
-//		log.info("Obtain the properties of the model");
-//		ExtendedIterator<ObjectProperty> properties = model.listObjectProperties();
-//
-//		log.info("Iterates over the properties");
-//		while (properties.hasNext()) {
-//			log.info("Property: " + properties.next().getLocalName());
-//		}
-//
-//		log.info("Obtains an iterator over individual resources");
-//		ExtendedIterator<Individual> individualResources = model.listIndividuals();
-//
-//		log.info("Iterates over the resources");
-//		while (individualResources.hasNext()) {
-//			log.info("Individual resource: " + individualResources.next());
-//		}
-//
-//		log.info("Obtains an extended iterator over classes");
-//		ExtendedIterator<OntClass> classes = model.listClasses();
-//
-//		log.info("Iterates over the classes");
-//		while (classes.hasNext()) {
-//			log.info("Class: " + classes.next().toString());
-//		}
+		log.info("Obtain the properties of the model");
+		ExtendedIterator<ObjectProperty> properties = model.listObjectProperties();
+
+		log.info("Iterates over the properties");
+		while (properties.hasNext()) {
+			log.info("Property: " + properties.next().getLocalName());
+		}
+
+		log.info("Obtains an iterator over individual resources");
+		ExtendedIterator<Individual> individualResources = model.listIndividuals();
+
+		log.info("Iterates over the resources");
+		while (individualResources.hasNext()) {
+			log.info("Individual resource: " + individualResources.next());
+		}
+
+		log.info("Obtains an extended iterator over classes");
+		ExtendedIterator<OntClass> classes = model.listClasses();
+
+		log.info("Iterates over the classes");
+		while (classes.hasNext()) {
+			log.info("Class: " + classes.next().toString());
+		}
 	}
 }

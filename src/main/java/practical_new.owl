@@ -194,6 +194,15 @@
     
 
 
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_2 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_2">
+        <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Car"/>
+        <hasState rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#stop"/>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#drive_straight -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#drive_straight">
@@ -220,6 +229,16 @@
     
 
 
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#road_2 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#road_2">
+        <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Road"/>
+        <hasParticipant rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_2"/>
+        <hasRoadAddition rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#stop_sign"/>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#solid_line -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#solid_line">
@@ -232,6 +251,14 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#stop">
         <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#State"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#stop_sign -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#stop_sign">
+        <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Sign"/>
     </owl:NamedIndividual>
     
 
