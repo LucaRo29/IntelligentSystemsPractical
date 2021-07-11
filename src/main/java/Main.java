@@ -26,13 +26,13 @@ public class Main {
 			"                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
 			"                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
 			"                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
-			"                                                                                                                                       ",
-			"                SELECT ?s  ?r   ?p ?a                                                                            ",
-			"                WHERE {                                                                                                     ",
-			"                {                                                                                                                     ",
-			"                  ?p xmlns:hasState ?s . "
-			+ " 				   ?r xmlns:hasParticipant	?p . "
-			+ " 				   ?r xmlns:hasRoadAddition	?a . "			                                                                                                                ,
+			"                                                    		",
+			"                SELECT *               		",
+			"                WHERE {                             		",
+			"                {                                   		",
+			"                  ?p xmlns:hasState ?s . 			 		",
+			" 				   ?r xmlns:hasParticipant	?p .     		",
+			" 				   ?r xmlns:hasRoadAddition	?a .     		",
 			"                }}");
 
 	//private static final String document = "http://ias.cs.tum.edu/kb/knowrob.owl#";
@@ -90,6 +90,7 @@ public class Main {
 				legal = false;
 				log.info("Driving over stop sign. Situation is not STVO conform");
 			}
+			
 		}
 		
 		if(legal)
