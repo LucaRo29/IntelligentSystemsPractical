@@ -113,7 +113,7 @@ public class Main {
                             }
                         }
                     }
-                    if(legal == true) {
+                    if(legal) {
 
                         String query = String.join(System.lineSeparator(),
                                 "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
