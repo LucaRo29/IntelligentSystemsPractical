@@ -7,10 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="sparql" />
-        <module name="Practical" />
+        <module name="is-demo" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="is-demo" target="1.8" />
       <module name="Practical" target="1.8" />
       <module name="sparql" target="1.8" />
     </bytecodeTargetLevel>
