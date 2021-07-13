@@ -285,7 +285,7 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_5">
         <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Car"/>
-        <hasState rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#turn_right"/>
+        <hasState rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#drive_straight"/>
     </owl:NamedIndividual>
     
 
@@ -315,6 +315,7 @@
         <hasParticipant rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_5"/>
         <hasParticipantOtherLane rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_7"/>
         <hasParticipantRight rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_6"/>
+        <hasRoadAddition rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#redTrafficLight"/>
     </owl:NamedIndividual>
     
 
@@ -331,6 +332,14 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#overtake">
         <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#State"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#redTrafficLight -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#redTrafficLight">
+        <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#TrafficLight"/>
     </owl:NamedIndividual>
     
 
