@@ -267,7 +267,7 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_6">
         <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Car"/>
-        <hasState rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#drive_straight"/>
+        <hasState rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#turn_right"/>
     </owl:NamedIndividual>
     
 
@@ -288,7 +288,6 @@
         <hasParticipant rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_7"/>
         <hasParticipantOtherLane rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_6"/>
         <hasParticipantRight rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_5"/>
-        <hasRoadAddition rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#stop_sign"/>
     </owl:NamedIndividual>
     
 

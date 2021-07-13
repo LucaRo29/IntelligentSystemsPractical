@@ -155,7 +155,63 @@ public class Main {
             	
                 if (states.get(i).getValue().matches("turn_left")) {
 
+                    String query = String.join(System.lineSeparator(),
+                            "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
+                            "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
+                            "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
+                            "                                                                                      ",
+                            "                SELECT ?s  ?r   ?p                                           ",
+                            "                WHERE {                                                               ",
+                            "                  ?r xmlns:hasParticipantOtherLane	?p .",
+                            " 				   ?p xmlns:hasState ?s .                          ",
+                            "}");
 
+                    System.out.println(query);
+                    QueryExecution qexe = QueryExecutionFactory.create(query, model);
+                    ResultSet result = qexe.execSelect();
+                    while (result.hasNext()) {
+                        QuerySolution sol = result.nextSolution();
+                        System.out.println(sol);
+
+                        if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight") || sol.get("s").asNode().getLocalName().equals("turn_right"))) {
+                            legal = false;
+                            log.info(roads.get(i).getValue()+ " " + participants.get(i).getValue() + ": Turning left into oncoming traffic. Situation is not STVO conform");
+
+                        }
+                    }
+                    
+                    if(legal)
+                    {
+                    	query = String.join(System.lineSeparator(),
+                                "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
+                                "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
+                                "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
+                                "                                                                                      ",
+                                "                SELECT ?s  ?r   ?p                                           ",
+                                "                WHERE {                                                               ",
+                                "                  ?r xmlns:hasParticipantRight	?p .",
+                                " 				   ?p xmlns:hasState ?s .                          ",
+                                "}");
+
+                        System.out.println(query);
+                        qexe = QueryExecutionFactory.create(query, model);
+                        result = qexe.execSelect();
+                        while (result.hasNext()) {
+                            QuerySolution sol = result.nextSolution();
+                            System.out.println(sol);
+
+                            if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight") || sol.get("s").asNode().getLocalName().equals("turn_left"))) {
+                                legal = false;
+                                log.info(roads.get(i).getValue()+ " " + participants.get(i).getValue() + ": Turning left into oncoming traffic. Situation is not STVO conform");
+
+                            }
+                        }
+                    	
+                    }
+                    
+                    
+                  
+               
                 }
                 
             }
