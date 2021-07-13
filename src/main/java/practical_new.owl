@@ -281,13 +281,13 @@
     
 
 
-    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#cross_1 -->
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#cross_9 -->
 
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#cross_1">
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#cross_9">
         <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#CrossSection"/>
-        <hasParticipant rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_7"/>
-        <hasParticipantOtherLane rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_6"/>
-        <hasParticipantRight rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_5"/>
+        <hasParticipant rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_5"/>
+        <hasParticipantOtherLane rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_7"/>
+        <hasParticipantRight rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_6"/>
     </owl:NamedIndividual>
     
 

@@ -14,7 +14,7 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 
-class Pair{
+class Pair {
     int key;
     String value;
 
@@ -49,7 +49,7 @@ public class Main {
             "                  ?r xmlns:hasParticipant	?p .                                          ",
             " 				   ?p xmlns:hasState ?s .                          ",
             " 				 OPTIONAL {  ?r xmlns:hasRoadAddition	?a }.                           ",
-             "}");
+            "}");
 
     //private static final String document = "http://ias.cs.tum.edu/kb/knowrob.owl#";
     private static final String document = "src/main/java/practical_new.owl";
@@ -76,42 +76,42 @@ public class Main {
 
         boolean legal = true;
 
-        int helper =0;
+
         while (results.hasNext()) {
             QuerySolution sol = results.nextSolution();
             System.out.println(sol);
 
             if (sol.get("p") != null) {
-                participants.add(new Pair(Integer.parseInt(sol.get("r").asNode().getLocalName().substring(sol.get("r").asNode().getLocalName().length()-1)),sol.get("p").asNode().getLocalName()));
+                participants.add(new Pair(Integer.parseInt(sol.get("r").asNode().getLocalName().substring(sol.get("r").asNode().getLocalName().length() - 1)), sol.get("p").asNode().getLocalName()));
             }
             if (sol.get("s") != null) {
-                states.add(new Pair(Integer.parseInt(sol.get("r").asNode().getLocalName().substring(sol.get("r").asNode().getLocalName().length()-1)),sol.get("s").asNode().getLocalName()));
+                states.add(new Pair(Integer.parseInt(sol.get("r").asNode().getLocalName().substring(sol.get("r").asNode().getLocalName().length() - 1)), sol.get("s").asNode().getLocalName()));
             }
             if (sol.get("r") != null) {
-                roads.add(new Pair(Integer.parseInt(sol.get("r").asNode().getLocalName().substring(sol.get("r").asNode().getLocalName().length()-1)),sol.get("r").asNode().getLocalName()));
-                }
+                roads.add(new Pair(Integer.parseInt(sol.get("r").asNode().getLocalName().substring(sol.get("r").asNode().getLocalName().length() - 1)), sol.get("r").asNode().getLocalName()));
+            }
             if (sol.get("a") != null) {
-                road_additions.add(new Pair(Integer.parseInt(sol.get("r").asNode().getLocalName().substring(sol.get("r").asNode().getLocalName().length()-1)),sol.get("a").asNode().getLocalName()));
+                road_additions.add(new Pair(Integer.parseInt(sol.get("r").asNode().getLocalName().substring(sol.get("r").asNode().getLocalName().length() - 1)), sol.get("a").asNode().getLocalName()));
             }
 
         }
 
         for (int i = 0; i < roads.size(); i++) {
-        	
+
             if (roads.get(i).getValue().matches("road(.*)")) {
                 System.out.println("test ");
                 if (states.get(i).getValue().matches("overtake")) {
 
-                    if (road_additions.size() != 0){
+                    if (road_additions.size() != 0) {
 
                         for (int j = 0; j < road_additions.size(); j++) {
-                            if (road_additions.get(j).getKey() == roads.get(i).getKey()&& states.get(i).getValue().equals("overtake") && road_additions.get(j).getValue().equals("solid_line")){
+                            if (road_additions.get(j).getKey() == roads.get(i).getKey() && states.get(i).getValue().equals("overtake") && road_additions.get(j).getValue().equals("solid_line")) {
                                 legal = false;
-                                log.info(roads.get(i).getValue()+ " " + participants.get(i).getValue() + ": Overtaking over solid line. Situation is not STVO conform");
+                                log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Overtaking over solid line. Situation is not STVO conform");
                             }
                         }
                     }
-                    if(legal) {
+                    if (legal) {
 
                         String query = String.join(System.lineSeparator(),
                                 "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
@@ -133,14 +133,14 @@ public class Main {
 
                             if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName())) {
                                 legal = false;
-                                log.info(roads.get(i).getValue()+ " " + participants.get(i).getValue() +": Overtaking into oncoming traffic. Situation is not STVO conform");
+                                log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Overtaking into oncoming traffic. Situation is not STVO conform");
 
                             }
                         }
                     }
                 }
                 if (states.get(i).getValue().matches("turn_left")) {
-                    if(legal) {
+                    if (legal) {
 
                         String query = String.join(System.lineSeparator(),
                                 "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
@@ -162,7 +162,7 @@ public class Main {
 
                             if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName())) {
                                 legal = false;
-                                log.info(roads.get(i).getValue()+ " " + participants.get(i).getValue() +": Turning left into oncoming traffic. Situation is not STVO conform");
+                                log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Turning left into oncoming traffic. Situation is not STVO conform");
 
                             }
                         }
@@ -170,18 +170,18 @@ public class Main {
                 }
 
             } else if (roads.get(i).getValue().matches("cross(.*)")) {
-            	System.out.println("test crossing");
-            	
-            	if (road_additions.size() != 0){
+                System.out.println("test crossing");
+
+                if (road_additions.size() != 0) {
                     for (int j = 0; j < road_additions.size(); j++) {
-                        if (road_additions.get(j).getKey() == roads.get(i).getKey() && states.get(i).getValue().equals("turn_left") && road_additions.get(j).getValue().equals("stop_sign")){
+                        if (road_additions.get(j).getKey() == roads.get(i).getKey() && !states.get(i).getValue().equals("stop") && road_additions.get(j).getValue().equals("stop_sign")) {
                             legal = false;
-                            log.info(roads.get(i).getValue()+ " " + participants.get(i).getValue() + ": Driving over Stop sign. Situation is not STVO conform");
+                            log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Driving over Stop sign. Situation is not STVO conform");
                         }
                     }
                 }
-            	
-            	
+
+
                 if (states.get(i).getValue().matches("turn_left")) {
 
                     String query = String.join(System.lineSeparator(),
@@ -204,14 +204,13 @@ public class Main {
 
                         if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight") || sol.get("s").asNode().getLocalName().equals("turn_right"))) {
                             legal = false;
-                            log.info(roads.get(i).getValue()+ " " + participants.get(i).getValue() + ": Turning left into oncoming traffic. Situation is not STVO conform");
+                            log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Turning left into oncoming traffic. Situation is not STVO conform");
 
                         }
                     }
-                    
-                    if(legal)
-                    {
-                    	query = String.join(System.lineSeparator(),
+
+                    if (legal) {
+                        query = String.join(System.lineSeparator(),
                                 "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
                                 "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
                                 "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
@@ -231,31 +230,59 @@ public class Main {
 
                             if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight") || sol.get("s").asNode().getLocalName().equals("turn_left"))) {
                                 legal = false;
-                                log.info(roads.get(i).getValue()+ " " + participants.get(i).getValue() + ": Turning left into oncoming traffic. Situation is not STVO conform");
+                                log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to right hand traffic. Situation is not STVO conform");
 
                             }
                         }
-                    	
+
                     }
-                    
-                    
-                  
-               
+
+
                 }
-                
+
+                if (states.get(i).getValue().matches("drive_straight")) {
+
+                    query = String.join(System.lineSeparator(),
+                            "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
+                            "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
+                            "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
+                            "                                                                                      ",
+                            "                SELECT ?s  ?r   ?p                                           ",
+                            "                WHERE {                                                               ",
+                            "                  ?r xmlns:hasParticipantRight	?p .",
+                            " 				   ?p xmlns:hasState ?s .                          ",
+                            "}");
+
+                    System.out.println(query);
+                    QueryExecution qexe = QueryExecutionFactory.create(query, model);
+                    ResultSet result = qexe.execSelect();
+                    while (result.hasNext()) {
+                        QuerySolution sol = result.nextSolution();
+                        System.out.println(sol);
+
+                        legal = false;
+                        log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to right hand traffic. Situation is not STVO conform");
+
+
+                    }
+
+                }
+
+                if (states.get(i).getValue().matches("turn_rigth")) {
+
+                    for (int j = 0; j < road_additions.size(); j++) {
+                        if (road_additions.get(j).getKey() == roads.get(i).getKey() && !states.get(i).getValue().equals("stop") && road_additions.get(j).getValue().equals("stop_sign")) {
+
+
+                        }
+                    }
+
+                }
             }
         }
 
-//
-//        for (int i = 0; i < participants.size(); i++) {
-//            if (road_additions.size() != 0 && states.get(i).equals("overtake") && road_additions.get(i).equals("solid_line")) {
-//                legal = false;
-//                log.info("Overtaking over solid line. Situation is not STVO conform");
-//            } else if (road_additions.size() != 0 && !(states.get(i).equals("stop")) && road_additions.get(i).equals("stop_sign")) {
-//                legal = false;
-//                log.info("Driving over stop sign. Situation is not STVO conform");
-//            }
-//        }
+
+
 
         if (legal) {
             log.info("Situation is STVO conform");
