@@ -31,6 +31,20 @@
     
 
 
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasParticipantLeft -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasParticipantLeft">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#RoadElement"/>
+        <rdfs:range>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasParticipantLeft"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Participant"/>
+            </owl:Restriction>
+        </rdfs:range>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasParticipantOtherLane -->
 
     <owl:ObjectProperty rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasParticipantOtherLane">
@@ -38,6 +52,20 @@
         <rdfs:range>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasParticipantOtherLane"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Participant"/>
+            </owl:Restriction>
+        </rdfs:range>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasParticipantRight -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasParticipantRight">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#RoadElement"/>
+        <rdfs:range>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasParticipantRight"/>
                 <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Participant"/>
             </owl:Restriction>
         </rdfs:range>
@@ -222,6 +250,17 @@
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_3">
         <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Car"/>
         <hasState rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#drive_straight"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#cross_1 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#cross_1">
+        <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#CrossSection"/>
+        <hasParticipant rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_1"/>
+        <hasParticipantOtherLane rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_2"/>
+        <hasParticipantRight rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_3"/>
     </owl:NamedIndividual>
     
 
