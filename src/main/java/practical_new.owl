@@ -231,7 +231,7 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_1">
         <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Car"/>
-        <hasState rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#overtake"/>
+        <hasState rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#drive_straight"/>
     </owl:NamedIndividual>
     
 
@@ -240,7 +240,7 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_2">
         <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Car"/>
-        <hasState rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#overtake"/>
+        <hasState rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#drive_straight"/>
     </owl:NamedIndividual>
     
 
@@ -254,13 +254,41 @@
     
 
 
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_5 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_5">
+        <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Car"/>
+        <hasState rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#turn_right"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_6 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_6">
+        <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Car"/>
+        <hasState rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#drive_straight"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_7 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_7">
+        <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Car"/>
+        <hasState rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#turn_left"/>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#cross_1 -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#cross_1">
         <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#CrossSection"/>
-        <hasParticipant rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_1"/>
-        <hasParticipantOtherLane rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_2"/>
-        <hasParticipantRight rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_3"/>
+        <hasParticipant rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_7"/>
+        <hasParticipantOtherLane rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_6"/>
+        <hasParticipantRight rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_5"/>
+        <hasRoadAddition rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#stop_sign"/>
     </owl:NamedIndividual>
     
 

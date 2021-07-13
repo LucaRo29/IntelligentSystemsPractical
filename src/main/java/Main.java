@@ -44,7 +44,7 @@ public class Main {
             "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
             "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
             "                                                                                      ",
-            "                SELECT ?s  ?r   ?p ?a                                          ",
+            "                SELECT *                                          ",
             "                WHERE {                                                               ",
             "                  ?r xmlns:hasParticipant	?p .                                          ",
             " 				   ?p xmlns:hasState ?s .                          ",
@@ -81,7 +81,6 @@ public class Main {
             QuerySolution sol = results.nextSolution();
             System.out.println(sol);
 
-
             if (sol.get("p") != null) {
                 participants.add(new Pair(Integer.parseInt(sol.get("r").asNode().getLocalName().substring(sol.get("r").asNode().getLocalName().length()-1)),sol.get("p").asNode().getLocalName()));
             }
@@ -98,8 +97,7 @@ public class Main {
         }
 
         for (int i = 0; i < roads.size(); i++) {
-
-
+        	
             if (roads.get(i).getValue().matches("road(.*)")) {
                 System.out.println("test ");
                 if (states.get(i).getValue().matches("overtake")) {
@@ -109,7 +107,7 @@ public class Main {
                         for (int j = 0; j < road_additions.size(); j++) {
                             if (road_additions.get(j).getKey() == roads.get(i).getKey()&& states.get(i).getValue().equals("overtake") && road_additions.get(j).getValue().equals("solid_line")){
                                 legal = false;
-                                log.info(roads.get(i).getValue()+": Overtaking over solid line. Situation is not STVO conform");
+                                log.info(roads.get(i).getValue()+ " " + participants.get(i).getValue() + ": Overtaking over solid line. Situation is not STVO conform");
                             }
                         }
                     }
@@ -135,16 +133,31 @@ public class Main {
 
                             if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName())) {
                                 legal = false;
-                                log.info(roads.get(i).getValue()+": Overtaking into oncoming traffic. Situation is not STVO conform");
+                                log.info(roads.get(i).getValue()+ " " + participants.get(i).getValue() +": Overtaking into oncoming traffic. Situation is not STVO conform");
 
                             }
                         }
                     }
                 }
 
-            } else if (roads.get(i).getValue().matches("cross")) {
+            } else if (roads.get(i).getValue().matches("cross(.*)")) {
+            	System.out.println("test crossing");
+            	
+            	if (road_additions.size() != 0){
+                    for (int j = 0; j < road_additions.size(); j++) {
+                        if (road_additions.get(j).getKey() == roads.get(i).getKey() && states.get(i).getValue().equals("turn_left") && road_additions.get(j).getValue().equals("stop_sign")){
+                            legal = false;
+                            log.info(roads.get(i).getValue()+ " " + participants.get(i).getValue() + ": Driving over Stop sign. Situation is not STVO conform");
+                        }
+                    }
+                }
+            	
+            	
+                if (states.get(i).getValue().matches("turn_left")) {
 
 
+                }
+                
             }
         }
 
