@@ -151,6 +151,7 @@ public class Main {
                                 "                WHERE {                                                               ",
                                 "                  ?r xmlns:hasParticipantOtherLane	?p .",
                                 " 				   ?p xmlns:hasState ?s .                          ",
+                                " 				 OPTIONAL {  ?r xmlns:hasRoadAddition	?a }.                           ",
                                 "}");
 
                         System.out.println(query);
@@ -189,10 +190,12 @@ public class Main {
                             "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
                             "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
                             "                                                                                      ",
-                            "                SELECT ?s  ?r   ?p                                           ",
+                            "                SELECT *                                          ",
                             "                WHERE {                                                               ",
                             "                  ?r xmlns:hasParticipantOtherLane	?p .",
                             " 				   ?p xmlns:hasState ?s .                          ",
+                            " 				 OPTIONAL {  ?r xmlns:hasRoadAddition	?a }.                           ",
+                            " 				 OPTIONAL {  ?r xmlns:hasRoadAdditionOpposite	?o }.                           ",
                             "}");
 
                     System.out.println(query);
@@ -201,12 +204,21 @@ public class Main {
                     while (result.hasNext()) {
                         QuerySolution sol = result.nextSolution();
                         System.out.println(sol);
+                        
+                    	if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight") || sol.get("s").asNode().getLocalName().equals("turn_right")) ) 
+                        {
+              
+                        	if(sol.get("o") == null || !(sol.get("o").asNode().getLocalName().equals("stop_sign") || sol.get("o").asNode().getLocalName().equals("giveway_sign"))
+                        			|| (sol.get("a") != null && sol.get("a").asNode().getLocalName().equals("giveway_sign") && sol.get("o").asNode().getLocalName().equals("giveway_sign")))
+                        	{
 
-                        if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight") || sol.get("s").asNode().getLocalName().equals("turn_right"))) {
-                            legal = false;
-                            log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Turning left into oncoming traffic. Situation is not STVO conform");
-
+                            	legal = false;
+                                log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Turning left into oncoming traffic. Situation is not STVO conform");
+                        	}
                         }
+                        
+                        
+                        
                     }
 
                     if (legal) {
@@ -215,22 +227,63 @@ public class Main {
                                 "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
                                 "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
                                 "                                                                                      ",
-                                "                SELECT ?s  ?r   ?p                                           ",
+                                "                SELECT *                                         ",
                                 "                WHERE {                                                               ",
                                 "                  ?r xmlns:hasParticipantRight	?p .",
                                 " 				   ?p xmlns:hasState ?s .                          ",
+                                " 				 OPTIONAL {  ?r xmlns:hasRoadAddition	?a }.                           ",
+                                " 				 OPTIONAL {  ?r xmlns:hasRoadAdditionRight	?o }.                           ",
                                 "}");
 
                         System.out.println(query);
                         qexe = QueryExecutionFactory.create(query, model);
                         result = qexe.execSelect();
+                        
                         while (result.hasNext()) {
                             QuerySolution sol = result.nextSolution();
                             System.out.println(sol);
 
                             if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight") || sol.get("s").asNode().getLocalName().equals("turn_left"))) {
-                                legal = false;
-                                log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to right hand traffic. Situation is not STVO conform");
+                            	
+                            	if(sol.get("o") == null || !(sol.get("o").asNode().getLocalName().equals("stop_sign") || sol.get("o").asNode().getLocalName().equals("giveway_sign"))
+                            			|| (sol.get("a") != null && sol.get("a").asNode().getLocalName().equals("giveway_sign") && sol.get("o").asNode().getLocalName().equals("giveway_sign")))
+                            	{
+                                	legal = false;
+                                    log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to right hand traffic. Situation is not STVO conform");
+                            	}
+
+                            }
+                        }
+
+                    }
+                    if (legal) {
+                        query = String.join(System.lineSeparator(),
+                                "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
+                                "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
+                                "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
+                                "                                                                                      ",
+                                "                SELECT *                                         ",
+                                "                WHERE {                                                               ",
+                                "                  ?r xmlns:hasParticipantLeft	?p .",
+                                " 				   ?p xmlns:hasState ?s .                          ",
+                                " 				 OPTIONAL {  ?r xmlns:hasRoadAddition	?a }.                           ",
+                                " 				 OPTIONAL {  ?r xmlns:hasRoadAdditionLeft	?o }.                           ",
+                                "}");
+
+                        System.out.println(query);
+                        qexe = QueryExecutionFactory.create(query, model);
+                        result = qexe.execSelect();
+                        
+                        while (result.hasNext()) {
+                            QuerySolution sol = result.nextSolution();
+                            System.out.println(sol);
+
+                            if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight") || sol.get("s").asNode().getLocalName().equals("turn_left"))) {
+                            	if(sol.get("a") != null && sol.get("a").asNode().getLocalName().equals("giveway_sign") && sol.get("o") == null)
+                            	{
+                                	legal = false;
+                                    log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to left hand traffic despite traffic sign. Situation is not STVO conform");
+                            	}
 
                             }
                         }
