@@ -244,32 +244,98 @@ public class Main {
 
                 if (legal && states.get(i).getValue().matches("drive_straight")) {
 
-                    query = String.join(System.lineSeparator(),
-                            "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
-                            "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
-                            "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
-                            "                                                                                      ",
-                            "                SELECT ?s  ?r   ?p                                           ",
-                            "                WHERE {                                                               ",
-                            "                  ?r xmlns:hasParticipantRight	?p .",
-                            " 				   ?p xmlns:hasState ?s .                          ",
-                            "}");
+                    for (Pair road_addition : road_additions) {
+                        if (road_addition.getKey() == roads.get(i).getKey() && road_addition.getValue().equals("giveway_sign")) {
 
-                    System.out.println(query);
-                    QueryExecution qexe = QueryExecutionFactory.create(query, model);
-                    ResultSet result = qexe.execSelect();
-                    while (result.hasNext()) {
-                        QuerySolution sol = result.nextSolution();
-                        System.out.println(sol);
+                            query = String.join(System.lineSeparator(),
+                                    "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
+                                    "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
+                                    "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
+                                    "                                                                                      ",
+                                    "                SELECT ?s  ?r   ?p                                           ",
+                                    "                WHERE {                                                               ",
+                                    "                  ?r xmlns:hasParticipantRight	?p .",
+                                    " 				   ?p xmlns:hasState ?s .                          ",
+                                    "                 OPTIONAL {  ?r xmlns:hasRoadAdditionRight	?a }.   ",
+                                    "}");
 
-                        if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName())) {
+                            System.out.println(query);
+                            QueryExecution qexe = QueryExecutionFactory.create(query, model);
+                            ResultSet result = qexe.execSelect();
+                            while (result.hasNext()) {
+                                QuerySolution sol = result.nextSolution();
+                                System.out.println(sol);
 
-                            legal = false;
-                            log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to right hand traffic. Situation is not STVO conform");
+                                if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName())) {
+                                    legal = false;
+                                    log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to right hand traffic. Situation is not STVO conform");
+
+                                }
+
+                            }
+                            query = String.join(System.lineSeparator(),
+                                    "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
+                                    "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
+                                    "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
+                                    "                                                                                      ",
+                                    "                SELECT ?s  ?r   ?p                                           ",
+                                    "                WHERE {                                                               ",
+                                    "                  ?r xmlns:hasParticipantLeft	?p .",
+                                    " 				   ?p xmlns:hasState ?s .                          ",
+                                    "                 OPTIONAL {  ?r xmlns:hasRoadAdditionLeft	?a }.   ",
+                                    "}");
+
+                            System.out.println(query);
+                            QueryExecution qexe1 = QueryExecutionFactory.create(query, model);
+                            ResultSet result1 = qexe1.execSelect();
+                            while (result1.hasNext()) {
+                                QuerySolution sol = result1.nextSolution();
+                                System.out.println(sol);
+
+                                if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName())) {
+
+                                    if (sol.get("a") == null) {
+                                        legal = false;
+                                        log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to left hand traffic. Situation is not STVO conform");
+                                    }
+                                }
+
+                            }
+
+                        } else {
+
+                            query = String.join(System.lineSeparator(),
+                                    "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
+                                    "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
+                                    "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
+                                    "                                                                                      ",
+                                    "                SELECT ?s  ?r   ?p                                           ",
+                                    "                WHERE {                                                               ",
+                                    "                  ?r xmlns:hasParticipantRight	?p .",
+                                    " 				   ?p xmlns:hasState ?s .                          ",
+                                    "                 OPTIONAL {  ?r xmlns:hasRoadAdditionRight	?a }.   ",
+                                    "}");
+
+                            System.out.println(query);
+                            QueryExecution qexe = QueryExecutionFactory.create(query, model);
+                            ResultSet result = qexe.execSelect();
+                            while (result.hasNext()) {
+                                QuerySolution sol = result.nextSolution();
+                                System.out.println(sol);
+
+                                if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName())) {
+
+                                    if (sol.get("a") == null) {
+                                        legal = false;
+                                        log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to right hand traffic. Situation is not STVO conform");
+                                    }
+
+                                }
+                            }
+
                         }
 
                     }
-
                 }
 
                 if (legal && states.get(i).getValue().matches("turn_right")) {
