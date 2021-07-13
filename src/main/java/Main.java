@@ -36,9 +36,6 @@ public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-    /**
-     * An SPARQL example
-     */
     private static String query = String.join(System.lineSeparator(),
             "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
             "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
@@ -54,11 +51,7 @@ public class Main {
     //private static final String document = "http://ias.cs.tum.edu/kb/knowrob.owl#";
     private static final String document = "src/main/java/practical_new.owl";
 
-    /**
-     * Examples of SPARQL with apache jena
-     *
-     * @param args none
-     */
+
     public static void main(String[] args) {
 
         log.info(query);
@@ -177,12 +170,21 @@ public class Main {
                         if (road_additions.get(j).getKey() == roads.get(i).getKey() && !states.get(i).getValue().equals("stop") && road_additions.get(j).getValue().equals("stop_sign")) {
                             legal = false;
                             log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Driving over Stop sign. Situation is not STVO conform");
+                            break;
+                        }
+                    }
+
+                    for (int j = 0; j < road_additions.size(); j++) {
+                        if (road_additions.get(j).getKey() == roads.get(i).getKey() && !states.get(i).getValue().equals("stop") && road_additions.get(j).getValue().matches("(.*)red(.*)")) {
+                            legal = false;
+                            log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Driving over red traffic light. Situation is not STVO conform");
+                            break;
                         }
                     }
                 }
 
 
-                if (states.get(i).getValue().matches("turn_left")) {
+                if (legal && states.get(i).getValue().matches("turn_left")) {
 
                     String query = String.join(System.lineSeparator(),
                             "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
@@ -240,7 +242,7 @@ public class Main {
 
                 }
 
-                if (states.get(i).getValue().matches("drive_straight")) {
+                if (legal && states.get(i).getValue().matches("drive_straight")) {
 
                     query = String.join(System.lineSeparator(),
                             "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
@@ -260,28 +262,59 @@ public class Main {
                         QuerySolution sol = result.nextSolution();
                         System.out.println(sol);
 
-                        legal = false;
-                        log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to right hand traffic. Situation is not STVO conform");
+                        if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName())) {
 
+                            legal = false;
+                            log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to right hand traffic. Situation is not STVO conform");
+                        }
 
                     }
 
                 }
 
-                if (states.get(i).getValue().matches("turn_rigth")) {
+                if (legal && states.get(i).getValue().matches("turn_right")) {
 
                     for (int j = 0; j < road_additions.size(); j++) {
-                        if (road_additions.get(j).getKey() == roads.get(i).getKey() && !states.get(i).getValue().equals("stop") && road_additions.get(j).getValue().equals("stop_sign")) {
+                        if (road_additions.get(j).getKey() == roads.get(i).getKey() && road_additions.get(j).getValue().equals("giveway_sign")) {
 
 
+                            query = String.join(System.lineSeparator(),
+                                    "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
+                                    "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
+                                    "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
+                                    "                                                                                      ",
+                                    "                SELECT ?s  ?r   ?p                                           ",
+                                    "                WHERE {                                                               ",
+                                    "                  ?r xmlns:hasParticipantLeft	?p .",
+                                    " 				   ?p xmlns:hasState ?s .                          ",
+                                    "                 OPTIONAL {  ?r xmlns:hasRoadAdditionLeft	?a }.   ",
+                                    "}");
+
+                            System.out.println(query);
+                            QueryExecution qexe = QueryExecutionFactory.create(query, model);
+                            ResultSet result = qexe.execSelect();
+                            while (result.hasNext()) {
+                                QuerySolution sol = result.nextSolution();
+                                System.out.println(sol);
+
+                                if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight"))) {
+
+                                    if (sol.get("a") == null) {
+                                        legal = false;
+                                        log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to left hand traffic. Situation is not STVO conform");
+
+                                    }
+                                }
+                            }
                         }
-                    }
 
+                        //!!!!!! Maybe special case, where participant other lane has no giveway sign
+
+                    }
                 }
+
             }
         }
-
-
 
 
         if (legal) {
