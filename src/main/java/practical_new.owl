@@ -82,6 +82,33 @@
     
 
 
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasRoadAdditionLeft -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasRoadAdditionLeft">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#RoadElement"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#RoadAddition"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasRoadAdditionOpposite -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasRoadAdditionOpposite">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#RoadElement"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#RoadAddition"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasRoadAdditionRight -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasRoadAdditionRight">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#RoadElement"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#RoadAddition"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasState -->
 
     <owl:ObjectProperty rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#hasState">
