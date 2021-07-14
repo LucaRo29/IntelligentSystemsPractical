@@ -58,7 +58,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        log.info(query);
+        //log.info(query);
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         model.read(document);
 
@@ -600,8 +600,6 @@ public class Main {
                         }
 
 
-                        //!!!!!! Maybe special case, where participant other lane has no giveway sign
-
                     }
                 }
                 if (!legal) {
@@ -612,37 +610,10 @@ public class Main {
         }
 
 
-
-
-
-
-            if(legal&&wholeworldlegal){
+        if (legal && wholeworldlegal) {
             log.info("Situation is STVO conform");
-            }
+        }
 
 
-//		log.info("Obtain the properties of the model");
-//		ExtendedIterator<ObjectProperty> properties = model.listObjectProperties();
-//
-//		log.info("Iterates over the properties");
-//		while (properties.hasNext()) {
-//			log.info("Property: " + properties.next().getLocalName());
-//		}
-//
-//		log.info("Obtains an iterator over individual resources");
-//		ExtendedIterator<Individual> individualResources = model.listIndividuals();
-//
-//		log.info("Iterates over the resources");
-//		while (individualResources.hasNext()) {
-//			log.info("Individual resource: " + individualResources.next());
-//		}
-//
-//		log.info("Obtains an extended iterator over classes");
-//		ExtendedIterator<OntClass> classes = model.listClasses();
-//
-//		log.info("Iterates over the classes");
-//		while (classes.hasNext()) {
-//			log.info("Class: " + classes.next().toString());
-//		}
-            }
-            }
+    }
+}
