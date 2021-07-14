@@ -14,6 +14,10 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//Luca Rodiga 1620972
+//Andreas
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 class Pair {
     int key;
     String value;
