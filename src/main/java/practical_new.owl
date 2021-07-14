@@ -366,6 +366,7 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#pedestrian_1">
         <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Pedestrian"/>
+        <hasState rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#cross_street"/>
     </owl:NamedIndividual>
     
 
