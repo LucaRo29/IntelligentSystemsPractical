@@ -210,6 +210,9 @@ public class Main {
                     while (result.hasNext()) {
                         QuerySolution sol = result.nextSolution();
                         System.out.println(sol);
+
+                        
+                        
                         
                     	if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight") || sol.get("s").asNode().getLocalName().equals("turn_right")) ) 
                         {
@@ -277,6 +280,9 @@ public class Main {
                                 " 				 OPTIONAL {  ?r xmlns:hasRoadAdditionLeft	?o }.                           ",
                                 "}");
 
+                        
+                        
+                        
                         System.out.println(query);
                         qexe = QueryExecutionFactory.create(query, model);
                         result = qexe.execSelect();
@@ -285,6 +291,13 @@ public class Main {
                             QuerySolution sol = result.nextSolution();
                             System.out.println(sol);
 
+                            if(sol.get("o") != null && sol.get("s").asNode().getLocalName().equals("cross_street") && sol.get("o").asNode().getLocalName().equals("pedestrian_crosswalk"))
+                            {
+                            	legal = false;
+                                log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Running over pedestrian. Situation is not STVO conform");
+                            }
+                            
+                            
                             if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight") || sol.get("s").asNode().getLocalName().equals("turn_left"))) {
                             	if(sol.get("a") != null && sol.get("a").asNode().getLocalName().equals("giveway_sign") && sol.get("o") == null)
                             	{
@@ -323,6 +336,12 @@ public class Main {
                                 QuerySolution sol = result.nextSolution();
                                 System.out.println(sol);
 
+                                if(sol.get("o") != null && sol.get("s").asNode().getLocalName().equals("cross_street") && sol.get("o").asNode().getLocalName().equals("pedestrian_crosswalk"))
+                                {
+                                	legal = false;
+                                    log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Running over pedestrian. Situation is not STVO conform");
+                                }
+                                
                             	if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && sol.get("s").asNode().getLocalName().equals("turn_left")) {
                                 	if(!(sol.get("a") != null && (sol.get("a").asNode().getLocalName().equals("stop_sign") || sol.get("a").asNode().getLocalName().equals("giveway_sign"))))
                                 	{
@@ -394,6 +413,33 @@ public class Main {
 
                         } else {
 
+                        	query = String.join(System.lineSeparator(),
+                                    "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
+                                    "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
+                                    "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
+                                    "                                                                                      ",
+                                    "                SELECT *                                          ",
+                                    "                WHERE {                                                               ",
+                                    "                  ?r xmlns:hasParticipantOtherLane	?p .",
+                                    " 				   ?p xmlns:hasState ?s .                          ",
+                                    "                 OPTIONAL {  ?r xmlns:hasRoadAdditionOpposite ?a }.   ",
+                                    "}");
+
+                            System.out.println(query);
+                            QueryExecution qexe = QueryExecutionFactory.create(query, model);
+                            ResultSet result = qexe.execSelect();
+                            while (result.hasNext()) {
+                                QuerySolution sol = result.nextSolution();
+                                System.out.println(sol);
+
+                                if(sol.get("o") != null && sol.get("s").asNode().getLocalName().equals("cross_street") && sol.get("o").asNode().getLocalName().equals("pedestrian_crosswalk"))
+                                {
+                                	legal = false;
+                                    log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Running over pedestrian. Situation is not STVO conform");
+                                }
+                        	
+                            }
+                        	
                             query = String.join(System.lineSeparator(),
                                     "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
                                     "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
@@ -407,8 +453,8 @@ public class Main {
                                     "}");
 
                             System.out.println(query);
-                            QueryExecution qexe = QueryExecutionFactory.create(query, model);
-                            ResultSet result = qexe.execSelect();
+                            qexe = QueryExecutionFactory.create(query, model);
+                            result = qexe.execSelect();
                             while (result.hasNext()) {
                                 QuerySolution sol = result.nextSolution();
                                 System.out.println(sol);
@@ -440,14 +486,42 @@ public class Main {
                                     "                                                                                      ",
                                     "                SELECT *                                          ",
                                     "                WHERE {                                                               ",
+                                    "                  ?r xmlns:hasParticipantRight	?p .",
+                                    " 				   ?p xmlns:hasState ?s .                          ",
+                                    "                 OPTIONAL {  ?r xmlns:hasRoadAdditionRight ?a }.   ",
+                                    "}");
+
+                            System.out.println(query);
+                            QueryExecution qexe = QueryExecutionFactory.create(query, model);
+                            ResultSet result = qexe.execSelect();
+                            while (result.hasNext()) {
+                                QuerySolution sol = result.nextSolution();
+                                System.out.println(sol);
+
+                                if(sol.get("o") != null && sol.get("s").asNode().getLocalName().equals("cross_street") && sol.get("o").asNode().getLocalName().equals("pedestrian_crosswalk"))
+                                {
+                                	legal = false;
+                                    log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Running over pedestrian. Situation is not STVO conform");
+                                }
+                        	
+                            }
+                        	
+                        	
+                        	query = String.join(System.lineSeparator(),
+                                    "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
+                                    "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
+                                    "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
+                                    "                                                                                      ",
+                                    "                SELECT *                                          ",
+                                    "                WHERE {                                                               ",
                                     "                  ?r xmlns:hasParticipantOtherLane	?p .",
                                     " 				   ?p xmlns:hasState ?s .                          ",
                                     "                 OPTIONAL {  ?r xmlns:hasRoadAdditionOpposite ?a }.   ",
                                     "}");
 
                             System.out.println(query);
-                            QueryExecution qexe = QueryExecutionFactory.create(query, model);
-                            ResultSet result = qexe.execSelect();
+                            qexe = QueryExecutionFactory.create(query, model);
+                            result = qexe.execSelect();
                             while (result.hasNext()) {
                                 QuerySolution sol = result.nextSolution();
                                 System.out.println(sol);
@@ -463,9 +537,6 @@ public class Main {
 
                             }
                         	
-                        	
-                        	
-
                             query = String.join(System.lineSeparator(),
                                     "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
                                     "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
@@ -495,6 +566,37 @@ public class Main {
                                 }
                             }
                         }
+                        else
+                        {
+                        	query = String.join(System.lineSeparator(),
+                                    "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
+                                    "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
+                                    "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
+                                    "                                                                                      ",
+                                    "                SELECT *                                          ",
+                                    "                WHERE {                                                               ",
+                                    "                  ?r xmlns:hasParticipantRight	?p .",
+                                    " 				   ?p xmlns:hasState ?s .                          ",
+                                    "                 OPTIONAL {  ?r xmlns:hasRoadAdditionRight ?a }.   ",
+                                    "}");
+
+                            System.out.println(query);
+                            QueryExecution qexe = QueryExecutionFactory.create(query, model);
+                            ResultSet result = qexe.execSelect();
+                            while (result.hasNext()) {
+                                QuerySolution sol = result.nextSolution();
+                                System.out.println(sol);
+
+                                if(sol.get("o") != null && sol.get("s").asNode().getLocalName().equals("cross_street") && sol.get("o").asNode().getLocalName().equals("pedestrian_crosswalk"))
+                                {
+                                	legal = false;
+                                    log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Running over pedestrian. Situation is not STVO conform");
+                                }
+                        	
+                            }
+                        }
+                        
+                     
 
                         //!!!!!! Maybe special case, where participant other lane has no giveway sign
 
