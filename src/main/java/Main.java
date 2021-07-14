@@ -16,7 +16,7 @@ import org.apache.jena.query.ResultSet;
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //Luca Rodiga 1620972
-//Andreas
+//Andreas Schriebl 11703008
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 class Pair {
     int key;
