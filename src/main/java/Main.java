@@ -72,11 +72,12 @@ public class Main {
         ArrayList<Pair> road_additions = new ArrayList<Pair>();
 
         boolean legal = true;
+        boolean wholeworldlegal = true;
 
 
         while (results.hasNext()) {
             QuerySolution sol = results.nextSolution();
-            System.out.println(sol);
+            // System.out.println(sol);
 
             if (sol.get("p") != null) {
                 participants.add(new Pair(Integer.parseInt(sol.get("r").asNode().getLocalName().substring(sol.get("r").asNode().getLocalName().length() - 1)), sol.get("p").asNode().getLocalName()));
@@ -96,7 +97,7 @@ public class Main {
         for (int i = 0; i < roads.size(); i++) {
 
             if (roads.get(i).getValue().matches("road(.*)")) {
-                System.out.println("test ");
+                //System.out.println("test ");
                 if (states.get(i).getValue().matches("overtake")) {
 
                     if (road_additions.size() != 0) {
@@ -121,12 +122,12 @@ public class Main {
                                 " 				   ?p xmlns:hasState ?s .                          ",
                                 "}");
 
-                        System.out.println(query);
+                        //System.out.println(query);
                         QueryExecution qexe = QueryExecutionFactory.create(query, model);
                         ResultSet result = qexe.execSelect();
                         while (result.hasNext()) {
                             QuerySolution sol = result.nextSolution();
-                            System.out.println(sol);
+                            //System.out.println(sol);
 
                             if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName())) {
                                 legal = false;
@@ -135,40 +136,54 @@ public class Main {
                             }
                         }
                     }
+
+
                 }
-                if (states.get(i).getValue().matches("turn_left")) {
-                    if (legal) {
+                if (legal) {
+                    String query = String.join(System.lineSeparator(),
+                            "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
+                            "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
+                            "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
+                            "                                                                                      ",
+                            "                SELECT ?s  ?r   ?p                                           ",
+                            "                WHERE {                                                               ",
+                            "                  ?r xmlns:hasParticipantSidewalk	?p .",
+                            " 				   ?p xmlns:hasState ?s .                          ",
+                            "}");
 
-                        String query = String.join(System.lineSeparator(),
-                                "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
-                                "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
-                                "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
-                                "                                                                                      ",
-                                "                SELECT ?s  ?r   ?p                                           ",
-                                "                WHERE {                                                               ",
-                                "                  ?r xmlns:hasParticipantOtherLane	?p .",
-                                " 				   ?p xmlns:hasState ?s .                          ",
-                                " 				 OPTIONAL {  ?r xmlns:hasRoadAddition	?a }.                           ",
-                                "}");
+                    //System.out.println(query);
+                    QueryExecution qexe = QueryExecutionFactory.create(query, model);
+                    ResultSet result = qexe.execSelect();
+                    while (result.hasNext()) {
+                        QuerySolution sol = result.nextSolution();
+                        //System.out.println(sol);
 
-                        System.out.println(query);
-                        QueryExecution qexe = QueryExecutionFactory.create(query, model);
-                        ResultSet result = qexe.execSelect();
-                        while (result.hasNext()) {
-                            QuerySolution sol = result.nextSolution();
-                            System.out.println(sol);
+                        if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName())) {
 
-                            if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName())) {
-                                legal = false;
-                                log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Turning left into oncoming traffic. Situation is not STVO conform");
+                            if (road_additions.size() != 0) {
+                                for (int j = 0; j < road_additions.size(); j++) {
+                                    if (road_additions.get(j).getKey() == roads.get(i).getKey() && !states.get(i).getValue().equals("stop") && road_additions.get(j).getValue().matches("(.*)crosswalk(.*)")) {
 
+                                        if (sol.get("s").asNode().getLocalName().equals("cross_street"))
+                                            legal = false;
+                                        log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not stopping for pedestrian at crosswalk. Situation is not STVO conform");
+                                        break;
+                                    }
+                                }
                             }
+
+
                         }
                     }
+
+                }
+                if (!legal) {
+                    wholeworldlegal = false;
                 }
 
             } else if (roads.get(i).getValue().matches("cross(.*)")) {
-                System.out.println("test crossing");
+                legal = true;
+                // System.out.println("test crossing");
 
                 if (road_additions.size() != 0) {
                     for (int j = 0; j < road_additions.size(); j++) {
@@ -204,31 +219,28 @@ public class Main {
                             " 				 OPTIONAL {  ?r xmlns:hasRoadAdditionOpposite	?o }.                           ",
                             "}");
 
-                    System.out.println(query);
+                    //System.out.println(query);
                     QueryExecution qexe = QueryExecutionFactory.create(query, model);
                     ResultSet result = qexe.execSelect();
                     while (result.hasNext()) {
                         QuerySolution sol = result.nextSolution();
-                        System.out.println(sol);
+                        //System.out.println(sol);
 
-                        
-                        
-                        
-                    	if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight") || sol.get("s").asNode().getLocalName().equals("turn_right")) ) 
-                        {
-              
-                        	if(sol.get("o") == null || !(sol.get("o").asNode().getLocalName().equals("stop_sign") || sol.get("o").asNode().getLocalName().equals("giveway_sign"))
-                        			|| (sol.get("a") != null && sol.get("a").asNode().getLocalName().equals("giveway_sign") && sol.get("o").asNode().getLocalName().equals("giveway_sign")))
-                        	{
+                        if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight") || sol.get("s").asNode().getLocalName().equals("turn_right"))) {
 
-                            	legal = false;
+                            if (sol.get("o") == null || !(sol.get("o").asNode().getLocalName().equals("stop_sign") || sol.get("o").asNode().getLocalName().equals("giveway_sign"))
+                                    || (sol.get("a") != null && sol.get("a").asNode().getLocalName().equals("giveway_sign") && sol.get("o").asNode().getLocalName().equals("giveway_sign"))) {
+                                //System.out.println(sol);
+
+
+                                legal = false;
                                 log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Turning left into oncoming traffic. Situation is not STVO conform");
-                        	}
+                            }
                         }
-                        
-                        
-                        
+
+
                     }
+
 
                     if (legal) {
                         query = String.join(System.lineSeparator(),
@@ -244,23 +256,21 @@ public class Main {
                                 " 				 OPTIONAL {  ?r xmlns:hasRoadAdditionRight	?o }.                           ",
                                 "}");
 
-                        System.out.println(query);
+                        //System.out.println(query);
                         qexe = QueryExecutionFactory.create(query, model);
                         result = qexe.execSelect();
-                        
+
                         while (result.hasNext()) {
                             QuerySolution sol = result.nextSolution();
-                            System.out.println(sol);
+                            //System.out.println(sol);
 
-                            if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight") || sol.get("s").asNode().getLocalName().equals("turn_left")))
-                            {
-                           
-                            	if(sol.get("o") == null || !(sol.get("o").asNode().getLocalName().equals("stop_sign") || sol.get("o").asNode().getLocalName().equals("giveway_sign"))
-                            			|| (sol.get("a") != null && sol.get("a").asNode().getLocalName().equals("giveway_sign") && sol.get("o").asNode().getLocalName().equals("giveway_sign")))
-                            	{
-                                	legal = false;
+                            if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight") || sol.get("s").asNode().getLocalName().equals("turn_left"))) {
+
+                                if (sol.get("o") == null || !(sol.get("o").asNode().getLocalName().equals("stop_sign") || sol.get("o").asNode().getLocalName().equals("giveway_sign"))
+                                        || (sol.get("a") != null && sol.get("a").asNode().getLocalName().equals("giveway_sign") && sol.get("o").asNode().getLocalName().equals("giveway_sign"))) {
+                                    legal = false;
                                     log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to right hand traffic. Situation is not STVO conform");
-                            	}
+                                }
 
                             }
                         }
@@ -280,30 +290,26 @@ public class Main {
                                 " 				 OPTIONAL {  ?r xmlns:hasRoadAdditionLeft	?o }.                           ",
                                 "}");
 
-                        
-                        
-                        
-                        System.out.println(query);
+
+                        //System.out.println(query);
                         qexe = QueryExecutionFactory.create(query, model);
                         result = qexe.execSelect();
-                        
+
                         while (result.hasNext()) {
                             QuerySolution sol = result.nextSolution();
-                            System.out.println(sol);
+                            //System.out.println(sol);
 
-                            if(sol.get("o") != null && sol.get("s").asNode().getLocalName().equals("cross_street") && sol.get("o").asNode().getLocalName().equals("pedestrian_crosswalk"))
-                            {
-                            	legal = false;
+                            if (sol.get("o") != null && sol.get("s").asNode().getLocalName().equals("cross_street") && sol.get("o").asNode().getLocalName().equals("pedestrian_crosswalk")) {
+                                legal = false;
                                 log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Running over pedestrian. Situation is not STVO conform");
                             }
-                            
-                            
+
+
                             if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight") || sol.get("s").asNode().getLocalName().equals("turn_left"))) {
-                            	if(sol.get("a") != null && sol.get("a").asNode().getLocalName().equals("giveway_sign") && sol.get("o") == null)
-                            	{
-                                	legal = false;
+                                if (sol.get("a") != null && sol.get("a").asNode().getLocalName().equals("giveway_sign") && sol.get("o") == null) {
+                                    legal = false;
                                     log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to left hand traffic despite traffic sign. Situation is not STVO conform");
-                            	}
+                                }
 
                             }
                         }
@@ -317,7 +323,7 @@ public class Main {
                     for (Pair road_addition : road_additions) {
                         if (road_addition.getKey() == roads.get(i).getKey() && road_addition.getValue().equals("giveway_sign")) {
 
-                        	query = String.join(System.lineSeparator(),
+                            query = String.join(System.lineSeparator(),
                                     "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
                                     "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
                                     "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
@@ -329,30 +335,30 @@ public class Main {
                                     "                 OPTIONAL {  ?r xmlns:hasRoadAdditionOpposite ?a }.   ",
                                     "}");
 
-                            System.out.println(query);
+                            //System.out.println(query);
                             QueryExecution qexe = QueryExecutionFactory.create(query, model);
                             ResultSet result = qexe.execSelect();
                             while (result.hasNext()) {
                                 QuerySolution sol = result.nextSolution();
-                                System.out.println(sol);
+                                //System.out.println(sol);
 
-                                if(sol.get("o") != null && sol.get("s").asNode().getLocalName().equals("cross_street") && sol.get("o").asNode().getLocalName().equals("pedestrian_crosswalk"))
-                                {
-                                	legal = false;
+
+                                if (sol.get("o") != null && sol.get("s").asNode().getLocalName().equals("cross_street") && sol.get("o").asNode().getLocalName().equals("pedestrian_crosswalk")) {
+                                    legal = false;
                                     log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Running over pedestrian. Situation is not STVO conform");
                                 }
-                                
-                            	if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && sol.get("s").asNode().getLocalName().equals("turn_left")) {
-                                	if(!(sol.get("a") != null && (sol.get("a").asNode().getLocalName().equals("stop_sign") || sol.get("a").asNode().getLocalName().equals("giveway_sign"))))
-                                	{
-                                    	legal = false;
+
+                                if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && sol.get("s").asNode().getLocalName().equals("turn_left")) {
+                                    if (!(sol.get("a") != null && (sol.get("a").asNode().getLocalName().equals("stop_sign") || sol.get("a").asNode().getLocalName().equals("giveway_sign")))) {
+                                        legal = false;
                                         log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to ongoing traffic. Situation is not STVO conform");
-                                	}
+                                    }
 
                                 }
 
                             }
-                        	
+
+
                             query = String.join(System.lineSeparator(),
                                     "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
                                     "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
@@ -365,19 +371,18 @@ public class Main {
                                     "                 OPTIONAL {  ?r xmlns:hasRoadAdditionRight	?a }.   ",
                                     "}");
 
-                            System.out.println(query);
+                            //System.out.println(query);
                             qexe = QueryExecutionFactory.create(query, model);
                             result = qexe.execSelect();
                             while (result.hasNext()) {
                                 QuerySolution sol = result.nextSolution();
-                                System.out.println(sol);
+                                //System.out.println(sol);
 
                                 if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && !(sol.get("s").asNode().getLocalName().equals("stop"))) {
-                                	if(!(sol.get("a") != null && sol.get("a").asNode().getLocalName().equals("stop_sign")))
-                                	{
-                                    	legal = false;
+                                    if (!(sol.get("a") != null && sol.get("a").asNode().getLocalName().equals("stop_sign"))) {
+                                        legal = false;
                                         log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to right hand traffic. Situation is not STVO conform");
-                                	}
+                                    }
 
                                 }
 
@@ -394,12 +399,12 @@ public class Main {
                                     "                 OPTIONAL {  ?r xmlns:hasRoadAdditionLeft	?a }.   ",
                                     "}");
 
-                            System.out.println(query);
+                            //System.out.println(query);
                             QueryExecution qexe1 = QueryExecutionFactory.create(query, model);
                             ResultSet result1 = qexe1.execSelect();
                             while (result1.hasNext()) {
                                 QuerySolution sol = result1.nextSolution();
-                                System.out.println(sol);
+                                //System.out.println(sol);
 
                                 if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && !(sol.get("s").asNode().getLocalName().equals("stop"))) {
 
@@ -413,7 +418,7 @@ public class Main {
 
                         } else {
 
-                        	query = String.join(System.lineSeparator(),
+                            query = String.join(System.lineSeparator(),
                                     "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
                                     "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
                                     "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
@@ -425,21 +430,20 @@ public class Main {
                                     "                 OPTIONAL {  ?r xmlns:hasRoadAdditionOpposite ?a }.   ",
                                     "}");
 
-                            System.out.println(query);
+                            //System.out.println(query);
                             QueryExecution qexe = QueryExecutionFactory.create(query, model);
                             ResultSet result = qexe.execSelect();
                             while (result.hasNext()) {
                                 QuerySolution sol = result.nextSolution();
-                                System.out.println(sol);
+                                //System.out.println(sol);
 
-                                if(sol.get("o") != null && sol.get("s").asNode().getLocalName().equals("cross_street") && sol.get("o").asNode().getLocalName().equals("pedestrian_crosswalk"))
-                                {
-                                	legal = false;
+                                if (sol.get("o") != null && sol.get("s").asNode().getLocalName().equals("cross_street") && sol.get("o").asNode().getLocalName().equals("pedestrian_crosswalk")) {
+                                    legal = false;
                                     log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Running over pedestrian. Situation is not STVO conform");
                                 }
-                        	
+
                             }
-                        	
+
                             query = String.join(System.lineSeparator(),
                                     "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
                                     "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
@@ -452,12 +456,13 @@ public class Main {
                                     "                 OPTIONAL {  ?r xmlns:hasRoadAdditionRight	?a }.   ",
                                     "}");
 
-                            System.out.println(query);
+                            //System.out.println(query);
                             qexe = QueryExecutionFactory.create(query, model);
                             result = qexe.execSelect();
+
                             while (result.hasNext()) {
                                 QuerySolution sol = result.nextSolution();
-                                System.out.println(sol);
+                                //System.out.println(sol);
 
                                 if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && !(sol.get("s").asNode().getLocalName().equals("stop"))) {
 
@@ -479,7 +484,8 @@ public class Main {
                     for (int j = 0; j < road_additions.size(); j++) {
                         if (road_additions.get(j).getKey() == roads.get(i).getKey() && road_additions.get(j).getValue().equals("giveway_sign")) {
 
-                        	query = String.join(System.lineSeparator(),
+
+                            query = String.join(System.lineSeparator(),
                                     "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
                                     "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
                                     "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
@@ -491,23 +497,22 @@ public class Main {
                                     "                 OPTIONAL {  ?r xmlns:hasRoadAdditionRight ?a }.   ",
                                     "}");
 
-                            System.out.println(query);
+                            //System.out.println(query);
                             QueryExecution qexe = QueryExecutionFactory.create(query, model);
                             ResultSet result = qexe.execSelect();
                             while (result.hasNext()) {
                                 QuerySolution sol = result.nextSolution();
-                                System.out.println(sol);
+                                //System.out.println(sol);
 
-                                if(sol.get("o") != null && sol.get("s").asNode().getLocalName().equals("cross_street") && sol.get("o").asNode().getLocalName().equals("pedestrian_crosswalk"))
-                                {
-                                	legal = false;
+                                if (sol.get("o") != null && sol.get("s").asNode().getLocalName().equals("cross_street") && sol.get("o").asNode().getLocalName().equals("pedestrian_crosswalk")) {
+                                    legal = false;
                                     log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Running over pedestrian. Situation is not STVO conform");
                                 }
-                        	
+
                             }
-                        	
-                        	
-                        	query = String.join(System.lineSeparator(),
+
+
+                            query = String.join(System.lineSeparator(),
                                     "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
                                     "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
                                     "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
@@ -519,24 +524,25 @@ public class Main {
                                     "                 OPTIONAL {  ?r xmlns:hasRoadAdditionOpposite ?a }.   ",
                                     "}");
 
-                            System.out.println(query);
+                            //System.out.println(query);
                             qexe = QueryExecutionFactory.create(query, model);
                             result = qexe.execSelect();
+
                             while (result.hasNext()) {
                                 QuerySolution sol = result.nextSolution();
-                                System.out.println(sol);
+                                //System.out.println(sol);
 
-                            	if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && sol.get("s").asNode().getLocalName().equals("turn_left")) {
-                                	if(!(sol.get("a") != null && (sol.get("a").asNode().getLocalName().equals("stop_sign") || sol.get("a").asNode().getLocalName().equals("giveway_sign"))))
-                                	{
-                                    	legal = false;
+                                if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && sol.get("s").asNode().getLocalName().equals("turn_left")) {
+                                    if (!(sol.get("a") != null && (sol.get("a").asNode().getLocalName().equals("stop_sign") || sol.get("a").asNode().getLocalName().equals("giveway_sign")))) {
+                                        legal = false;
                                         log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Not giving way to ongoing traffic. Situation is not STVO conform");
-                                	}
+                                    }
 
                                 }
 
                             }
-                        	
+
+
                             query = String.join(System.lineSeparator(),
                                     "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
                                     "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
@@ -549,12 +555,12 @@ public class Main {
                                     "                 OPTIONAL {  ?r xmlns:hasRoadAdditionLeft	?a }.   ",
                                     "}");
 
-                            System.out.println(query);
+                            //System.out.println(query);
                             qexe = QueryExecutionFactory.create(query, model);
                             result = qexe.execSelect();
                             while (result.hasNext()) {
                                 QuerySolution sol = result.nextSolution();
-                                System.out.println(sol);
+                                //System.out.println(sol);
 
                                 if (roads.get(i).getValue().equals(sol.get("r").asNode().getLocalName()) && (sol.get("s").asNode().getLocalName().equals("drive_straight"))) {
 
@@ -565,10 +571,8 @@ public class Main {
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
-                        	query = String.join(System.lineSeparator(),
+                        } else {
+                            query = String.join(System.lineSeparator(),
                                     "                PREFIX xmlns:     <http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#>",
                                     "                PREFIX owl:       <http://www.w3.org/2002/07/owl#>",
                                     "                PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>",
@@ -580,36 +584,41 @@ public class Main {
                                     "                 OPTIONAL {  ?r xmlns:hasRoadAdditionRight ?a }.   ",
                                     "}");
 
-                            System.out.println(query);
+                            //System.out.println(query);
                             QueryExecution qexe = QueryExecutionFactory.create(query, model);
                             ResultSet result = qexe.execSelect();
                             while (result.hasNext()) {
                                 QuerySolution sol = result.nextSolution();
-                                System.out.println(sol);
+                                //System.out.println(sol);
 
-                                if(sol.get("o") != null && sol.get("s").asNode().getLocalName().equals("cross_street") && sol.get("o").asNode().getLocalName().equals("pedestrian_crosswalk"))
-                                {
-                                	legal = false;
+                                if (sol.get("o") != null && sol.get("s").asNode().getLocalName().equals("cross_street") && sol.get("o").asNode().getLocalName().equals("pedestrian_crosswalk")) {
+                                    legal = false;
                                     log.info(roads.get(i).getValue() + " " + participants.get(i).getValue() + ": Running over pedestrian. Situation is not STVO conform");
                                 }
-                        	
+
                             }
                         }
-                        
-                     
+
 
                         //!!!!!! Maybe special case, where participant other lane has no giveway sign
 
                     }
+                }
+                if (!legal) {
+                    wholeworldlegal = false;
                 }
 
             }
         }
 
 
-        if (legal) {
+
+
+
+
+            if(legal&&wholeworldlegal){
             log.info("Situation is STVO conform");
-        }
+            }
 
 
 //		log.info("Obtain the properties of the model");
@@ -635,5 +644,5 @@ public class Main {
 //		while (classes.hasNext()) {
 //			log.info("Class: " + classes.next().toString());
 //		}
-    }
-}
+            }
+            }
