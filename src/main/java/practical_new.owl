@@ -314,8 +314,18 @@
         <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#CrossSection"/>
         <hasParticipant rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_5"/>
         <hasParticipantLeft rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_6"/>
+        <hasParticipantLeft rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#pedestrian_1"/>
         <hasParticipantOtherLane rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#car_7"/>
         <hasRoadAddition rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#greenTrafficLight"/>
+        <hasRoadAdditionLeft rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#pedestrian_crosswalk"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#cross_street -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#cross_street">
+        <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#State"/>
     </owl:NamedIndividual>
     
 
@@ -348,6 +358,22 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#overtake">
         <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#State"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#pedestrian_1 -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#pedestrian_1">
+        <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#Pedestrian"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#pedestrian_crosswalk -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#pedestrian_crosswalk">
+        <rdf:type rdf:resource="http://www.semanticweb.org/andi/ontologies/2021/6/practical_new#RoadMarking"/>
     </owl:NamedIndividual>
     
 
